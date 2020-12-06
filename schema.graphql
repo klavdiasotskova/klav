@@ -1,0 +1,41 @@
+type Pixel @entity {
+  "Pixel id"
+  id: ID!
+  "Pixel owner"
+  owner: Owner
+  "Pixel name"
+  name: String
+  "Pixel palette"
+  palette: Bytes
+  "Pixel data"
+  data: Bytes
+
+}
+
+type transfer @entity {
+  "Transaction hash of transfer"
+  id: ID!
+  "Old owner"
+  owner: Owner
+  "New owner"
+  newowner: Owner
+  "Pixel"
+  pixel: Pixel
+}
+
+type Owner @entity {
+  "Owners address"
+  id: ID!
+  "Owners pixels"
+  pixels: [Pixel!] @derivedFrom(field: "owner")
+  "Owners transfers"
+  transfers: [transfer!] @derivedFrom(field: "owner")
+}
+
+type Total @entity {
+  id: ID!
+  "Quantity of addresses who has or had pixels"
+  totalowners: BigInt!
+  "Total pixels created"
+  totalpixels: BigInt!
+}
