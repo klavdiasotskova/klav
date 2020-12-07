@@ -12,7 +12,8 @@ import { transfer,Owner,Pixel,Total} from "../generated/schema"
 export function handleApproval(event: Approval): void {
 }
 
-export function handleApprovalForAll(event: ApprovalForAll): void {}
+export function handleApprovalForAll(event: ApprovalForAll): void {
+}
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 }
@@ -25,9 +26,9 @@ export function handlePixelChainCreated(event: PixelChainCreated): void {
     tot.totalowners=BigInt.fromI32(0)
   }
 
-  let entity = Pixel.load(event.params.id.toHex())
+  let entity = Pixel.load(event.params.id.toString())
   if (entity == null) {
-    entity = new Pixel(event.params.id.toHex())
+    entity = new Pixel(event.params.id.toString())
     tot.totalpixels=tot.totalpixels+BigInt.fromI32(1)
   }
   let ownerent = Owner.load(event.params.author.toHex())
@@ -46,12 +47,12 @@ export function handlePixelChainCreated(event: PixelChainCreated): void {
 }
 
 export function handleTransfer(event: Transfer): void {
-  let entity = transfer.load(event.transaction.hash.toHex())
+  let entity = transfer.load(event.transaction.hash.toHex()+'-'+event.params.tokenId.toString())
   if (entity == null) {
-    entity = new transfer(event.transaction.hash.toHex())
+    entity = new transfer(event.transaction.hash.toHex()+'-'+event.params.tokenId.toString())
     entity.owner=event.params.from.toHex()
     entity.newowner=event.params.to.toHex()
-    entity.pixel=event.params.tokenId.toHex()
+    entity.pixel=event.params.tokenId.toString()
     entity.save()
   }
   let tot = Total.load('0')
@@ -67,9 +68,9 @@ export function handleTransfer(event: Transfer): void {
     tot.totalowners=tot.totalowners + BigInt.fromI32(1)
       }
 
-  let pix = Pixel.load(event.params.tokenId.toHex())
+  let pix = Pixel.load(event.params.tokenId.toString())
   if (pix == null) {
-    pix = new Pixel(event.params.tokenId.toHex())
+    pix = new Pixel(event.params.tokenId.toString())
     tot.totalpixels=tot.totalpixels+BigInt.fromI32(1)
   }
   pix.owner=ownerent.id
